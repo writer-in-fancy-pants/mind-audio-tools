@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Tools - Audio Therapy Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Crimson+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #faf9f7;
+            --bg-secondary: #f0ede8;
+            --text-primary: #2a2522;
+            --text-secondary: #6b6560;
+            --accent: #d4a574;
+            --error: #c85a54;
+            --success: #7a9b76;
+            --border: #e0dcd5;
+            --shadow: rgba(42, 37, 34, 0.08);
+            --button-hover: #e8dfd3;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1816;
+            --bg-secondary: #252220;
+            --text-primary: #ebe8e3;
+            --text-secondary: #a39d96;
+            --accent: #d4a574;
+            --error: #e87c75;
+            --success: #95b891;
+            --border: #3a3633;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --button-hover: #302c28;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 2rem 1.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1.5px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--button-hover);
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 1.5rem 3rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .test-selector {
+            width: 100%;
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-button {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .dropdown-button:hover {
+            border-color: var(--accent);
+            background: var(--button-hover);
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .dropdown.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .dropdown.open .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 1.2rem 1.5rem;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--button-hover);
+            padding-left: 2rem;
+        }
+
+        .instructions {
+            font-size: 1.1rem;
+            color: var(--error);
+            text-align: center;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            animation: fadeIn 0.6s ease 0.2s both;
+            font-weight: 400;
+        }
+
+        .button-container {
+            margin-bottom: 3rem;
+            animation: scaleIn 0.6s ease 0.3s both;
+        }
+
+        .main-button {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--bg-primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px var(--shadow);
+            position: relative;
+        }
+
+        .main-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px var(--shadow);
+        }
+
+        .main-button:active {
+            transform: scale(0.98);
+        }
+
+        .main-button.active {
+            background: var(--success);
+        }
+
+        .main-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .main-button.disabled:hover {
+            transform: none;
+        }
+
+        .button-text {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-display {
+            position: absolute;
+            bottom: -2.5rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-family: 'Crimson Pro', serif;
+        }
+
+        .results-box {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            min-height: 150px;
+            animation: fadeIn 0.6s ease 0.4s both;
+        }
+
+        .results-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .results-content strong {
+            color: var(--text-primary);
+        }
+
+        .options-panel {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease 0.3s both;
+        }
+
+        .option-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .option-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem 0;
+        }
+
+        .option-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .option-label input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .option-label select {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Crimson Pro', serif;
+            cursor: pointer;
+        }
+
+        .range-value {
+            min-width: 60px;
+            text-align: right;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 1.5rem 1rem 0.5rem;
+            }
+
+            .dropdown-button {
+                font-size: 1.5rem;
+                padding: 1rem;
+            }
+
+            .dropdown-item {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+
+            .main-button {
+                width: 160px;
+                height: 160px;
+                font-size: 2rem;
+            }
+
+            .instructions {
+                font-size: 1rem;
+            }
+
+            .results-box {
+                padding: 1.5rem;
+            }
+
+            .options-panel {
+                padding: 1rem;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div></div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="theme-icon">☀️</span>
+        </button>
+    </header>
+
+    <main>
+        <div class="test-selector">
+            <div class="dropdown" id="testDropdown">
+                <button class="dropdown-button" id="dropdownButton">
+                    <span id="selectedTest">Hearing Test</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" data-test="hearing">Hearing Test</div>
+                    <div class="dropdown-item" data-test="emdr">EMDR (Processing Memories)</div>
+                    <div class="dropdown-item" data-test="meditate">Meditation</div>
+                </div>
+            </div>
+        </div>
+
+        <p class="instructions" id="instructions">
+            Press the button every time you hear a sound (Use earphones)
+        </p>
+
+        <div id="optionsPanel" class="options-panel hidden"></div>
+
+        <div class="button-container">
+            <button class="main-button" id="mainButton" aria-label="Main action button">
+                <span class="button-text" id="buttonContent">▶</span>
+                <span class="timer-display hidden" id="timerDisplay">00:00</span>
+            </button>
+        </div>
+
+        <div class="results-box">
+            <div class="results-content" id="resultsContent">
+                Ready to begin your hearing test. Click the play button above to start.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ==================== Audio Context Setup ====================
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        // ==================== State Management ====================
+        const state = {
+            currentTest: 'hearing',
+            testRunning: false,
+            testStartTime: null,
+            timerInterval: null,
+            
+            // Hearing test
+            hearingData: {
+                leftEar: [],
+                rightEar: [],
+                numCorrect: 6,
+                currentVolume: 0.1,
+                correctCount: { left: 0, right: 0 },
+                testActive: false,
+                awaitingResponse: false,
+                responseTimeout: null,
+                nextBeepTimeout: null,
+                lastBeepEar: null,
+                lastBeepTime: null,
+                responseWindow: 2000
+            },
+            
+            // EMDR
+            emdrData: {
+                isPlaying: false,
+                oscillatorInterval: null,
+                reminderTimeout: null,
+                distance: 50,
+                volume: 0.5,
+                speed: 1,
+                periodicReminders: false
+            },
+            
+            // Meditation
+            meditationData: {
+                isPlaying: false,
+                duration: 10,
+                guidance: true,
+                interruptions: true,
+                startTime: null,
+                sessionTimeout: null,
+                interruptionTimeouts: []
+            }
+        };
+
+        // ==================== DOM Elements ====================
+        const elements = {
+            themeToggle: document.getElementById('themeToggle'),
+            testDropdown: document.getElementById('testDropdown'),
+            dropdownButton: document.getElementById('dropdownButton'),
+            dropdownMenu: document.getElementById('dropdownMenu'),
+            selectedTest: document.getElementById('selectedTest'),
+            instructions: document.getElementById('instructions'),
+            optionsPanel: document.getElementById('optionsPanel'),
+            mainButton: document.getElementById('mainButton'),
+            buttonContent: document.getElementById('buttonContent'),
+            timerDisplay: document.getElementById('timerDisplay'),
+            resultsContent: document.getElementById('resultsContent')
+        };
+
+        // ==================== Audio Generation ====================
+        function createBeep(frequency = 440, duration = 0.2, volume = 0.5, pan = 0) {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            const panNode = audioCtx.createStereoPanner();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(panNode);
+            panNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.01);
+            gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + duration - 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+            
+            panNode.pan.value = pan;
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + duration);
+            
+            return new Promise(resolve => {
+                oscillator.onended = resolve;
+            });
+        }
+
+        function createPannedBeep(volume = 0.5, panPosition = 0) {
+            return createBeep(800, 0.15, volume, panPosition);
+        }
+
+        function createReminderBeep() {
+            return createBeep(1000, 0.3, 0.3, 0);
+        }
+
+        // ==================== Theme Toggle ====================
+        elements.themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            elements.themeToggle.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+        });
+
+        // ==================== Dropdown ====================
+        elements.dropdownButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            elements.testDropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!elements.testDropdown.contains(e.target)) {
+                elements.testDropdown.classList.remove('open');
+            }
+        });
+
+        elements.dropdownMenu.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const testType = item.dataset.test;
+                switchTest(testType);
+                elements.testDropdown.classList.remove('open');
+            });
+        });
+
+        // ==================== Test Switching ====================
+        function switchTest(testType) {
+            // Stop current test
+            stopCurrentTest();
+            
+            state.currentTest = testType;
+            //elements.selectedTest.textContent = state.currentTest.textContent;
+            
+            // Update UI based on test type
+            switch(testType) {
+                case 'hearing':
+                    setupHearingTest();
+                    elements.selectedTest.textContent = "Hearing Test"
+                    break;
+                case 'emdr':
+                    setupEMDRTest();
+                    elements.selectedTest.textContent = "EMDR (Processing Memories)"
+                    break;
+                case 'meditate':
+                    setupMeditationTest();
+                    elements.selectedTest.textContent = "Meditation"
+                    break;
+            }
+        }
+
+        function stopCurrentTest() {
+            // Clear all timeouts and intervals
+            clearTimeout(state.hearingData.responseTimeout);
+            clearTimeout(state.hearingData.nextBeepTimeout);
+            clearInterval(state.emdrData.oscillatorInterval);
+            clearTimeout(state.emdrData.reminderTimeout);
+            clearTimeout(state.meditationData.sessionTimeout);
+            state.meditationData.interruptionTimeouts.forEach(t => clearTimeout(t));
+            clearInterval(state.timerInterval);
+            
+            // Reset states
+            state.testRunning = false;
+            state.hearingData.testActive = false;
+            state.emdrData.isPlaying = false;
+            state.meditationData.isPlaying = false;
+            
+            elements.timerDisplay.classList.add('hidden');
+        }
+
+        // ==================== Hearing Test ====================
+        function setupHearingTest() {
+            elements.instructions.textContent = 'Press the button every time you hear a sound (Use earphones)';
+            elements.buttonContent.textContent = '▶';
+            elements.resultsContent.textContent = 'Ready to begin your hearing test. Click the play button above to start.';
+            elements.optionsPanel.classList.add('hidden');
+            elements.mainButton.classList.remove('active', 'disabled');
+        }
+
+        async function startHearingTest() {
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            state.hearingData.testActive = true;
+            state.hearingData.leftEar = [];
+            state.hearingData.rightEar = [];
+            state.hearingData.currentVolume = 0.5;
+            state.hearingData.correctCount = { left: 0, right: 0 };
+            
+            elements.buttonContent.textContent = 'Detect';
+            elements.mainButton.classList.add('active');
+            elements.resultsContent.textContent = 'Test in progress... Click the button when you hear a sound.';
+            
+            scheduleNextBeep();
+        }
+
+        function scheduleNextBeep() {
+            if (!state.hearingData.testActive) return;
+            
+            const delay = 2000 + Math.random() * 3000;
+            
+            state.hearingData.nextBeepTimeout = setTimeout(() => {
+                playHearingBeep();
+            }, delay);
+        }
+
+        async function playHearingBeep() {
+            if (!state.hearingData.testActive) return;
+            
+            const ear = Math.random() < 0.5 ? 'left' : 'right';
+            const pan = ear === 'left' ? -1 : 1;
+            
+            state.hearingData.lastBeepEar = ear;
+            state.hearingData.lastBeepTime = Date.now();
+            state.hearingData.awaitingResponse = true;
+            
+            await createPannedBeep(state.hearingData.currentVolume, pan);
+            
+            state.hearingData.responseTimeout = setTimeout(() => {
+                if (state.hearingData.awaitingResponse) {
+                    handleMissedBeep();
+                }
+            }, state.hearingData.responseWindow);
+        }
+
+        function handleHearingButtonClick() {
+            if (!state.hearingData.testActive) {
+                startHearingTest();
+                return;
+            }
+            
+            if (state.hearingData.awaitingResponse) {
+                clearTimeout(state.hearingData.responseTimeout);
+                const responseTime = Date.now() - state.hearingData.lastBeepTime;
+                
+                if (responseTime <= state.hearingData.responseWindow) {
+                    handleCorrectResponse();
+                } else {
+                    handleMissedBeep();
+                }
+            }
+        }
+
+        function handleCorrectResponse() {
+            const ear = state.hearingData.lastBeepEar;
+            const volume = state.hearingData.currentVolume;
+            
+            if (ear === 'left') {
+                state.hearingData.leftEar.push({ volume, correct: true });
+                state.hearingData.correctCount.left++;
+            } else {
+                state.hearingData.rightEar.push({ volume, correct: true });
+                state.hearingData.correctCount.right++;
+            }
+            
+            // Reduce volume after correct response
+            state.hearingData.currentVolume = Math.max(0.1, state.hearingData.currentVolume * 0.7);
+            state.hearingData.awaitingResponse = false;
+            
+            updateHearingProgress();
+            
+            if (state.hearingData.correctCount.left >= state.hearingData.numCorrect 
+             && state.hearingData.correctCount.right >= state.hearingData.numCorrect) {
+                finishHearingTest();
+            } else {
+                scheduleNextBeep();
+            }
+        }
+
+        function handleMissedBeep() {
+            const ear = state.hearingData.lastBeepEar;
+            const volume = state.hearingData.currentVolume;
+            
+            if (ear === 'left') {
+                state.hearingData.leftEar.push({ volume, correct: false });
+            } else {
+                state.hearingData.rightEar.push({ volume, correct: false });
+            }
+            
+            // Increase volume after missed response
+            state.hearingData.currentVolume = Math.min(1.0, state.hearingData.currentVolume * 1.15);
+            state.hearingData.awaitingResponse = false;
+            
+            updateHearingProgress();
+            scheduleNextBeep();
+        }
+
+        function updateHearingProgress() {
+            const leftCount = state.hearingData.correctCount.left;
+            const rightCount = state.hearingData.correctCount.right;
+            const numCorrect = state.hearingData.numCorrect;
+            elements.resultsContent.textContent = `Progress: Left ear ${leftCount}/${numCorrect}, Right ear ${rightCount}/${numCorrect}`;
+        }
+
+        function finishHearingTest() {
+            state.hearingData.testActive = false;
+            clearTimeout(state.hearingData.nextBeepTimeout);
+            
+            elements.buttonContent.textContent = '▶';
+            elements.mainButton.classList.remove('active');
+            
+            // Calculate results
+            const leftCorrect = state.hearingData.leftEar.filter(b => b.correct);
+            const rightCorrect = state.hearingData.rightEar.filter(b => b.correct);
+            
+            const leftMin = Math.min(...leftCorrect.map(b => b.volume));
+            const rightMin = Math.min(...rightCorrect.map(b => b.volume));
+            
+            const leftDB = Math.round(20 * Math.log10(leftMin / 0.5));
+            const rightDB = Math.round(20 * Math.log10(rightMin / 0.5));
+            
+            elements.resultsContent.innerHTML = `
+                <strong>Hearing Test Complete</strong><br><br>
+                <strong>Left Ear:</strong> Can detect sounds at ${leftDB} dB relative level<br>
+                <strong>Right Ear:</strong> Can detect sounds at ${rightDB} dB relative level<br><br>
+                Lower numbers indicate better hearing sensitivity.
+            `;
+        }
+
+        // ==================== EMDR Test ====================
+        function setupEMDRTest() {
+            elements.instructions.textContent = 'Press the play button to start (Use earphones). Look in the direction of the sound for better results.';
+            elements.buttonContent.textContent = '▶';
+            elements.resultsContent.textContent = 'Ready to begin EMDR session. Adjust options below and click play.';
+            elements.mainButton.classList.remove('active', 'disabled');
+            
+            // Show options
+            elements.optionsPanel.innerHTML = `
+                <div class="option-group">
+                    <label class="option-label">
+                        <span>Distance:</span>
+                        <input type="range" id="emdrDistance" min="20" max="100" value="50" step="10">
+                        <span class="range-value" id="distanceValue">50%</span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <span>Volume:</span>
+                        <input type="range" id="emdrVolume" min="10" max="100" value="50" step="5">
+                        <span class="range-value" id="volumeValue">50%</span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <span>Speed:</span>
+                        <input type="range" id="emdrSpeed" min="0.5" max="2" value="1" step="0.1">
+                        <span class="range-value" id="speedValue">1x</span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" id="periodicReminders">
+                        <span>Periodic reminders to identify thought</span>
+                    </label>
+                </div>
+            `;
+            elements.optionsPanel.classList.remove('hidden');
+            
+            // Add event listeners
+            document.getElementById('emdrDistance').addEventListener('input', (e) => {
+                state.emdrData.distance = parseInt(e.target.value);
+                document.getElementById('distanceValue').textContent = e.target.value + '%';
+            });
+            
+            document.getElementById('emdrVolume').addEventListener('input', (e) => {
+                state.emdrData.volume = parseInt(e.target.value) / 100;
+                document.getElementById('volumeValue').textContent = e.target.value + '%';
+            });
+            
+            document.getElementById('emdrSpeed').addEventListener('input', (e) => {
+                state.emdrData.speed = parseFloat(e.target.value);
+                document.getElementById('speedValue').textContent = e.target.value + 'x';
+            });
+            
+            document.getElementById('periodicReminders').addEventListener('change', (e) => {
+                state.emdrData.periodicReminders = e.target.checked;
+            });
+        }
+
+        async function toggleEMDR() {
+            if (!state.emdrData.isPlaying) {
+                await startEMDR();
+            } else {
+                stopEMDR();
+            }
+        }
+
+        async function startEMDR() {
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            state.emdrData.isPlaying = true;
+            state.testRunning = true;
+            state.testStartTime = Date.now();
+            
+            elements.buttonContent.textContent = '⏸';
+            elements.mainButton.classList.add('active');
+            elements.timerDisplay.classList.remove('hidden');
+            elements.resultsContent.textContent = 'EMDR session in progress. Follow the sound with your eyes.';
+            
+            startTimer();
+            startEMDROscillator();
+            
+            if (state.emdrData.periodicReminders) {
+                scheduleEMDRReminder();
+            }
+        }
+
+        function startEMDROscillator() {
+            let position = -1;
+            let direction = 1;
+            const baseInterval = 1000 / state.emdrData.speed;
+            let count = 0;
+            
+            function oscillate() {
+                count++;
+                if (!state.emdrData.isPlaying) return;
+                
+                //const panValue = position * (state.emdrData.distance / 100);
+                const panValue = Math.cos((600*count)/baseInterval)
+                console.log(panValue)
+                createPannedBeep(state.emdrData.volume, panValue);
+                
+                position += direction * 0.1;
+                if (position >= 1 || position <= -1) {
+                    direction *= -1;
+                    position = Math.max(-1, Math.min(1, position));
+                }
+                
+                state.emdrData.oscillatorInterval = setTimeout(oscillate, baseInterval);
+
+            }
+            
+            oscillate();
+        }
+
+        function scheduleEMDRReminder() {
+            if (!state.emdrData.isPlaying) return;
+            
+            const delay = (30 + Math.random() * 270) * 1000; // 30s to 5min
+            
+            state.emdrData.reminderTimeout = setTimeout(() => {
+                if (state.emdrData.isPlaying) {
+                    createReminderBeep();
+                    elements.resultsContent.textContent = 'Notice your thoughts... What are you thinking about?';
+                    setTimeout(() => {
+                        if (state.emdrData.isPlaying) {
+                            elements.resultsContent.textContent = 'EMDR session in progress. Follow the sound with your eyes.';
+                        }
+                    }, 5000);
+                    scheduleEMDRReminder();
+                }
+            }, delay);
+        }
+
+        function stopEMDR() {
+            state.emdrData.isPlaying = false;
+            state.testRunning = false;
+            clearTimeout(state.emdrData.oscillatorInterval);
+            clearTimeout(state.emdrData.reminderTimeout);
+            clearInterval(state.timerInterval);
+            
+            elements.buttonContent.textContent = '▶';
+            elements.mainButton.classList.remove('active');
+            elements.timerDisplay.classList.add('hidden');
+            elements.resultsContent.textContent = 'EMDR session paused. Click play to resume.';
+        }
+
+        // ==================== Meditation ====================
+        function setupMeditationTest() {
+            elements.instructions.textContent = 'Press the play button to start (Use earphones). The guide will instruct you, and occasionally check on your meditation progress.';
+            elements.buttonContent.textContent = '▶';
+            elements.resultsContent.textContent = 'Ready to begin meditation session. Configure your session below and click play.';
+            elements.mainButton.classList.remove('active', 'disabled');
+            
+            elements.optionsPanel.innerHTML = `
+                <div class="option-group">
+                    <label class="option-label">
+                        <span>Duration:</span>
+                        <select id="meditationDuration">
+                            <option value="5">5 minutes</option>
+                            <option value="10" selected>10 minutes</option>
+                            <option value="15">15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" id="disableGuidance">
+                        <span>Disable guidance</span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" id="disableInterruptions">
+                        <span>Disable interruptions</span>
+                    </label>
+                </div>
+            `;
+            elements.optionsPanel.classList.remove('hidden');
+            
+            document.getElementById('meditationDuration').addEventListener('change', (e) => {
+                state.meditationData.duration = parseInt(e.target.value);
+            });
+            
+            document.getElementById('disableGuidance').addEventListener('change', (e) => {
+                state.meditationData.guidance = !e.target.checked;
+            });
+            
+            document.getElementById('disableInterruptions').addEventListener('change', (e) => {
+                state.meditationData.interruptions = !e.target.checked;
+            });
+        }
+
+        async function toggleMeditation() {
+            if (!state.meditationData.isPlaying) {
+                await startMeditation();
+            } else {
+                stopMeditation();
+            }
+        }
+
+        async function startMeditation() {
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            state.meditationData.isPlaying = true;
+            state.testRunning = true;
+            state.testStartTime = Date.now();
+            state.meditationData.startTime = Date.now();
+            
+            elements.buttonContent.textContent = '⏸';
+            elements.mainButton.classList.add('active');
+            elements.timerDisplay.classList.remove('hidden');
+            elements.resultsContent.textContent = 'Meditation session in progress. Find a comfortable position and close your eyes.';
+            
+            startTimer();
+            
+            // Play guidance
+            if (state.meditationData.guidance) {
+                setTimeout(() => {
+                    elements.resultsContent.textContent = '🔔 Begin by taking three deep breaths...';
+                    createBeep(528, 0.5, 0.3, 0);
+                }, 2000);
+                
+                setTimeout(() => {
+                    elements.resultsContent.textContent = 'Notice your breath flowing naturally... in and out...';
+                }, 15000);
+                
+                setTimeout(() => {
+                    elements.resultsContent.textContent = 'When thoughts arise, gently return your attention to your breath...';
+                }, 30000);
+            }
+            
+            // Schedule interruptions
+            if (state.meditationData.interruptions) {
+                const duration = state.meditationData.duration * 60 * 1000;
+                const numInterruptions = Math.floor(state.meditationData.duration / 5);
+                
+                for (let i = 0; i < numInterruptions; i++) {
+                    const time = (i + 1) * (duration / (numInterruptions + 1));
+                    const timeout = setTimeout(() => {
+                        if (state.meditationData.isPlaying) {
+                            createBeep(528, 0.3, 0.25, 0);
+                            const messages = [
+                                'How is your meditation going? Return to your breath...',
+                                'Notice any tension in your body... and let it go...',
+                                'Observe your thoughts without judgment...',
+                                'Bring awareness to the present moment...'
+                            ];
+                            elements.resultsContent.textContent = '🔔 ' + messages[Math.floor(Math.random() * messages.length)];
+                        }
+                    }, time);
+                    state.meditationData.interruptionTimeouts.push(timeout);
+                }
+            }
+            
+            // Schedule end
+            const duration = state.meditationData.duration * 60 * 1000;
+            state.meditationData.sessionTimeout = setTimeout(() => {
+                finishMeditation();
+            }, duration);
+        }
+
+        async function finishMeditation() {
+            await createBeep(528, 1, 0.4, 0);
+            
+            stopMeditation();
+            elements.resultsContent.innerHTML = `
+                <strong>Meditation Complete</strong><br><br>
+                You meditated for ${state.meditationData.duration} minutes.<br>
+                Take a moment to notice how you feel before continuing your day.
+            `;
+        }
+
+        function stopMeditation() {
+            state.meditationData.isPlaying = false;
+            state.testRunning = false;
+            clearTimeout(state.meditationData.sessionTimeout);
+            state.meditationData.interruptionTimeouts.forEach(t => clearTimeout(t));
+            state.meditationData.interruptionTimeouts = [];
+            clearInterval(state.timerInterval);
+            
+            elements.buttonContent.textContent = '▶';
+            elements.mainButton.classList.remove('active');
+            elements.timerDisplay.classList.add('hidden');
+            
+            if (state.meditationData.isPlaying === false && elements.resultsContent.textContent.includes('in progress')) {
+                elements.resultsContent.textContent = 'Meditation session paused. Click play to resume or start a new session.';
+            }
+        }
+
+        // ==================== Timer ====================
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        function updateTimer() {
+            if (!state.testRunning) return;
+            
+            const elapsed = Math.floor((Date.now() - state.testStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            elements.timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // ==================== Main Button Handler ====================
+        elements.mainButton.addEventListener('click', async () => {
+            if (elements.mainButton.classList.contains('disabled')) return;
+            
+            switch(state.currentTest) {
+                case 'hearing':
+                    handleHearingButtonClick();
+                    break;
+                case 'emdr':
+                    await toggleEMDR();
+                    break;
+                case 'meditate':
+                    await toggleMeditation();
+                    break;
+            }
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                elements.mainButton.click();
+            }
+        });
+
+        // Initialize
+        setupHearingTest();
+    </script>
+</body>
+</html>
