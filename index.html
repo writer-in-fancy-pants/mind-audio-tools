@@ -374,6 +374,12 @@
                 font-size: 2rem;
             }
 
+            .ball-button {
+                width: 80px;
+                height: 80px;
+                color:#c85a54;
+            }
+
             .instructions {
                 font-size: 1rem;
             }
@@ -471,6 +477,7 @@
                 distance: 50,
                 volume: 0.5,
                 speed: 1,
+                panValue: 0,
                 periodicReminders: false
             },
             
@@ -634,6 +641,35 @@
             elements.resultsContent.textContent = 'Test in progress... Click the button when you hear a sound.';
             
             scheduleNextBeep();
+        }
+
+        function placeBall(percentageX) {
+            // Create ball element if it doesn't exist
+            let ball = document.getElementById('red-ball');
+            
+            if (!ball) {
+                ball = document.createElement('div');
+                ball.id = 'red-ball';
+                
+                // Style the ball
+                ball.style.position = 'fixed';
+                ball.style.width = '40px';
+                ball.style.height = '40px';
+                ball.style.borderRadius = '50%';
+                ball.style.backgroundColor = 'red';
+                ball.style.boxShadow = '0 5px 20px rgba(255, 0, 0, 0.5)';
+                ball.style.top = '50%';
+                ball.style.transform = 'translate(-50%, -50%)';
+                ball.style.transition = 'left 0.1s linear';
+                ball.style.zIndex = '9999';
+                ball.style.pointerEvents = 'none';
+                
+                // Add to body
+                document.body.appendChild(ball);
+            }
+            
+            // Set horizontal position (0-100%)
+            ball.style.left = percentageX + '%';
         }
 
         function scheduleNextBeep() {
@@ -860,9 +896,10 @@
                 if (!state.emdrData.isPlaying) return;
                 
                 //const panValue = position * (state.emdrData.distance / 100);
-                const panValue = Math.cos((600*count)/baseInterval)
-                console.log(panValue)
-                createPannedBeep(state.emdrData.volume, panValue);
+                state.emdrData.panValue = Math.sin((600*count)/baseInterval)
+                //console.log(panValue)
+                placeBall(48*(1+state.emdrData.panValue))
+                createPannedBeep(state.emdrData.volume, state.emdrData.panValue);
                 
                 position += direction * 0.1;
                 if (position >= 1 || position <= -1) {
@@ -907,6 +944,10 @@
             elements.mainButton.classList.remove('active');
             elements.timerDisplay.classList.add('hidden');
             elements.resultsContent.textContent = 'EMDR session paused. Click play to resume.';
+
+            // Remove moving ball
+            const element = document.getElementById('red-ball');
+            element.remove();
         }
 
         // ==================== Meditation ====================
