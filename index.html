@@ -474,6 +474,7 @@
                 isPlaying: false,
                 oscillatorInterval: null,
                 reminderTimeout: null,
+                showBall: true,
                 distance: 50,
                 volume: 0.5,
                 speed: 1,
@@ -831,6 +832,12 @@
                         <span>Periodic reminders to identify thought</span>
                     </label>
                 </div>
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" id="showBall">
+                        <span>Show visual aid (red ball)</span>
+                    </label>
+                </div>
             `;
             elements.optionsPanel.classList.remove('hidden');
             
@@ -852,6 +859,10 @@
             
             document.getElementById('periodicReminders').addEventListener('change', (e) => {
                 state.emdrData.periodicReminders = e.target.checked;
+            });
+
+            document.getElementById('showBall').addEventListener('change', (e) => {
+                state.emdrData.showBall = e.target.checked;
             });
         }
 
@@ -898,7 +909,7 @@
                 //const panValue = position * (state.emdrData.distance / 100);
                 state.emdrData.panValue = Math.sin((600*count)/baseInterval)
                 //console.log(panValue)
-                placeBall(48*(1+state.emdrData.panValue))
+                if (state.emdrData.showBall) placeBall(48*(1+state.emdrData.panValue))
                 createPannedBeep(state.emdrData.volume, state.emdrData.panValue);
                 
                 position += direction * 0.1;
